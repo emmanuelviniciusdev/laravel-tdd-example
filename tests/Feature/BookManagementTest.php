@@ -6,29 +6,23 @@ use Tests\TestCase;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class BookReservationTest extends TestCase
+class BookManagementTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
     public function a_book_can_be_added_to_the_library()
     {
-        $response = $this->post('/api/books', [
-            'title' => 'O Segredo da Morta',
-            'author' => 'António de Assis'
-        ]);
+        $response = $this->createBook();
 
-        $response->assertOk();
         $this->assertCount(1, Book::all());
+        $response->assertRedirect('/books/1');
     }
     
     /** @test */
     public function a_title_is_required()
     {
-        $response = $this->post('/api/books', [
-            'title' => '',
-            'author' => 'António de Assis'
-        ]);
+        $response = $this->createBook('');
 
         $response->assertSessionHasErrors('title');
     }
@@ -36,10 +30,7 @@ class BookReservationTest extends TestCase
     /** @test */
     public function an_author_is_required()
     {
-        $response = $this->post('/api/books', [
-            'title' => 'O Segredo da Morta',
-            'author' => ''
-        ]);
+        $response = $this->createBook('a', '');
 
         $response->assertSessionHasErrors('author');
     }
@@ -50,10 +41,7 @@ class BookReservationTest extends TestCase
         /**
          * Create a book before updating
          */
-        $this->post('/api/books', [
-            'title' => 'O Segredo da Morta',
-            'author' => 'António de Assis'
-        ]);
+        $this->createBook();
 
         $newBookTitle = 'O Segredo da Morta (eu quero ler esse livro)';
 
@@ -62,5 +50,28 @@ class BookReservationTest extends TestCase
         ]);
 
         $this->assertEquals($newBookTitle, Book::first()->title);
+        $response->assertRedirect('/books/1');
+    }
+
+    /** @test */
+    public function a_book_can_be_deleted()
+    {
+        /**
+         * Create a book before deleting
+         */
+        $this->createBook();
+
+        $response = $this->delete('/api/books/1');
+
+        $this->assertCount(0, Book::all());
+        $response->assertRedirect('/books');
+    }
+
+    protected function createBook($title = 'O Segredo da Morta', $author = 'António de Assis')
+    {
+        return $this->post('/api/books', [
+            'title' => $title,
+            'author' => $author
+        ]);
     }
 }
