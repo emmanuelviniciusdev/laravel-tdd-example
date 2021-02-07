@@ -15,7 +15,7 @@ class BooksController extends Controller
 
         $newBook = Book::create($data);
 
-        return response($newBook);
+        return redirect("/books/{$newBook->id}");
     }
 
     public function update(int $bookId)
@@ -24,6 +24,13 @@ class BooksController extends Controller
 
         $updatedBookId = Book::find($bookId)->update($data);
 
-        return $updatedBookId;
+        return redirect("/books/{$updatedBookId}");
+    }
+
+    public function destroy(int $bookId)
+    {
+        Book::destroy($bookId);
+
+        return redirect('/books');
     }
 }
