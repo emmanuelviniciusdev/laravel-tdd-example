@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/books', 'App\Http\Controllers\BooksController@store');
+Route::patch('/books/{id}', 'App\Http\Controllers\BooksController@update');
