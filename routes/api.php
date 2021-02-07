@@ -20,3 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/books', 'App\Http\Controllers\BooksController@store');
 Route::patch('/books/{id}', 'App\Http\Controllers\BooksController@update');
+Route::delete('/books/{id}', 'App\Http\Controllers\BooksController@destroy');
+
+Route::post('/authors', 'App\Http\Controllers\AuthorController@store');
