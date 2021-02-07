@@ -13,8 +13,6 @@ class BookReservationTest extends TestCase
     /** @test */
     public function a_book_can_be_added_to_the_library()
     {
-        $this->withoutExceptionHandling();
-
         $response = $this->post('/api/books', [
             'title' => 'O Segredo da Morta',
             'author' => 'António de Assis'
@@ -49,8 +47,6 @@ class BookReservationTest extends TestCase
     /** @test */
     public function a_book_can_be_updated()
     {
-        $this->withoutExceptionHandling();
-
         /**
          * Create a book before updating
          */
