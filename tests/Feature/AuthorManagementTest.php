@@ -15,8 +15,6 @@ class AuthorManagementTest extends TestCase
     /** @test */
     public function an_author_can_be_created()
     {
-        $this->withoutExceptionHandling();
-
         $this->createAuthor();
 
         $authors = Author::all();
