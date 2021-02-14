@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
 use App\Models\Book;
 
 class BooksController extends Controller
 {
     public function store()
     {
-        $data = request()->validate([
-            'title' => 'required',
-            'author' => 'required',
+        $data = $this->validatedRequestData();
+
+        $author = Author::firstOrCreate([
+            'name' => $data['authorName']
         ]);
+        
+        $data['author_id'] = $author->id;
+
+        unset($data['authorName']);
 
         $newBook = Book::create($data);
 
@@ -32,5 +38,13 @@ class BooksController extends Controller
         Book::destroy($bookId);
 
         return redirect('/books');
+    }
+
+    protected function validatedRequestData()
+    {
+        return request()->validate([
+            'title' => 'required',
+            'authorName' => 'required',
+        ]);
     }
 }

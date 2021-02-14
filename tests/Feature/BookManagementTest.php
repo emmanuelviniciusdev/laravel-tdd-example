@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Author;
 use Tests\TestCase;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,7 +33,7 @@ class BookManagementTest extends TestCase
     {
         $response = $this->createBook('a', '');
 
-        $response->assertSessionHasErrors('author');
+        $response->assertSessionHasErrors('authorName');
     }
 
     /** @test */
@@ -67,11 +68,23 @@ class BookManagementTest extends TestCase
         $response->assertRedirect('/books');
     }
 
-    protected function createBook($title = 'O Segredo da Morta', $author = 'António de Assis')
+    /** @test */
+    public function a_new_author_is_automatically_added()
+    {
+        $this->createBook();
+
+        $book = Book::first();
+        $author = Author::first();
+
+        $this->assertEquals($author->id, $book->author_id);
+        $this->assertCount(1, Author::all());
+    }
+
+    protected function createBook($title = 'O Segredo da Morta', $authorName = 'António de Assis')
     {
         return $this->post('/api/books', [
             'title' => $title,
-            'author' => $author
+            'authorName' => $authorName
         ]);
     }
 }
